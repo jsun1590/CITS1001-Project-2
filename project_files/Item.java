@@ -5,7 +5,7 @@
  * @author Ms Caitlin Woods
  * @version April 2022
  * 
- * Student Names and Numbers: Kim Thanh Huynh 23168144
+ * Student Names and Numbers: Kim Thanh Huynh 23168144 / Jack Sun 23466264
  */
 
 import java.awt.Color;
