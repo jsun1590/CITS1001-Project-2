@@ -5,7 +5,7 @@
  * @author Ms Caitlin Woods
  * @version April 2022
  * 
- * Student Names and Numbers: { ENTER YOUR STUDENT NAME AND NUMBER HERE }
+ * Student Names and Numbers: Kim Thanh Huynh 23168144
  */
 
 import java.awt.Color;
@@ -28,6 +28,11 @@ public class Item {
      */
     public Item(String type, int[][] shape) {
         // TODO 1
+        this.type = type;
+        this.shape = shape;
+        this.locationX = -1;
+        this.locationY = -1;
+        this.isFound = false;
     }
 
     /**
@@ -37,7 +42,7 @@ public class Item {
      */
     public String getType() {
         // TODO 2
-        return null;
+        return this.type;
     }
 
     /**
@@ -47,7 +52,7 @@ public class Item {
      */
     public int[][] getShape() {
         // TODO 3
-        return null;
+        return this.shape;
     }
 
     /**
@@ -57,6 +62,8 @@ public class Item {
      */
     public void setShape(int[][] newShape) {
         // TODO 4
+        shape = ();
+        
     }
 
     /**
