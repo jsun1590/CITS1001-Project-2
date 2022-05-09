@@ -5,7 +5,7 @@
  * @author Ms Caitlin Woods
  * @version April 2022
  * 
- * Student Names and Numbers: Kim Thanh Huynh 23168144
+ * Student Names and Numbers: Kim Thanh Huynh 23168144 / Jack Sun 23466264
  */
 
 import java.util.ArrayList;
@@ -22,9 +22,9 @@ public class Board {
     public Board() {
         // TODO 11
         this.board = new Piece[12][12];
-        
-        for(int y=0; y<12; y++) {
-            for(int x=0; x<12; x++) {
+
+        for (int y = 0; y < 12; y++) {
+            for (int x = 0; x < 12; x++) {
                 this.board[y][x] = Piece.VACANT;
             }
         }
@@ -38,9 +38,9 @@ public class Board {
     public Board(int rows, int cols, Piece defaultValue) {
         // TODO 12
         this.board = new Piece[cols][rows];
-        
-        for(int y=0; y<cols; y++) {
-            for(int x=0; x<rows; x++) {
+
+        for (int y = 0; y < cols; y++) {
+            for (int x = 0; x < rows; x++) {
                 this.board[y][x] = defaultValue;
             }
         }
@@ -50,6 +50,7 @@ public class Board {
      * Returns the size of the board as an integer (i.e. 12x12 board should return
      * 12)
      * hint: You can assume the grid is square (i.e. rows == cols)
+     * 
      * @return the size of the board
      */
     public int getBoardSize() {
@@ -59,6 +60,7 @@ public class Board {
 
     /**
      * Returns true if x and y are coordinates in the board, false otherwise
+     * 
      * @param x the x coordinate
      * @param y the y coordinate
      * @return true if x and y are coordinates in the board, false otherwise
@@ -66,7 +68,7 @@ public class Board {
     public boolean isPiece(int x, int y) {
         // TODO 14
         if (0 <= x && x < this.getBoardSize() &&
-            0 <= y && y < this.getBoardSize()) {
+                0 <= y && y < this.getBoardSize()) {
             return true;
         }
 
@@ -75,6 +77,7 @@ public class Board {
 
     /**
      * Returns the value of the piece at the given coordinates
+     * 
      * @param x the x coordinate
      * @param y the y coordinate
      * @return the value of the piece at the given coordinates
@@ -85,13 +88,14 @@ public class Board {
         if (this.isPiece(x, y)) {
             return this.board[y][x];
         }
-        
+
         throw new IllegalArgumentException("Coordinates are not valid.");
     }
-    
+
     /**
      * Check if a given piece is part of a lost item
      * Throw an exeption if the piece is not in the board
+     * 
      * @param x the x coordinate
      * @param y the y coordinate
      * @return true if a given piece is part of a lost item, false otherwise
@@ -104,11 +108,12 @@ public class Board {
         }
         return false;
     }
-    
+
     /**
      * Sets the given piece to be part of a lost item (i.e. an item is hidden at
      * this location)
      * Throw an exception if the piece is not on the board
+     * 
      * @param x the x coordinate
      * @param y the y coordinate
      * @throws IllegalArgumentException if the piece is not in the board
@@ -123,6 +128,7 @@ public class Board {
     /**
      * Check if a given piece is vacant
      * Throw an exeption if the piece is not in the board
+     * 
      * @param x the x coordinate
      * @param y the y coordinate
      * @return true if a given piece is vacant, false otherwise
@@ -135,10 +141,11 @@ public class Board {
         }
         return false;
     }
-    
+
     /**
      * Sets the given piece to be vacant (i.e. no item is on this location)
      * Throw an exception if the piece is not on the board
+     * 
      * @param x the x coordinate
      * @param y the y coordinate
      * @throws IllegalArgumentException if the piece is not in the board
@@ -149,10 +156,11 @@ public class Board {
             this.board[y][x] = Piece.VACANT;
         }
     }
-    
+
     /**
      * Check if a given piece is part of an item that has been found by the player
      * Throw an exeption if the piece is not in the board
+     * 
      * @param x the x coordinate
      * @param y the y coordinate
      * @return true if a given piece is part of a found item, false otherwise
@@ -166,11 +174,11 @@ public class Board {
         return false;
     }
 
-    
     /**
      * Sets the given piece to be part of a found item (i.e. an item is hidden at
      * this location and this piece has been found by the player)
      * Throw an exception if the piece is not on the board
+     * 
      * @param x the x coordinate
      * @param y the y coordinate
      * @throws IllegalArgumentException if the piece is not in the board
@@ -181,11 +189,12 @@ public class Board {
             this.board[y][x] = Piece.FOUNDITEM;
         }
     }
-    
+
     /**
      * Check if a given piece has been searched by the player (but does not contain
      * any part of a hidden item)
      * Throw an exeption if the piece is not in the board
+     * 
      * @param x the x coordinate
      * @param y the y coordinate
      * @return true if a given piece is part of a found item, false otherwise
@@ -198,11 +207,12 @@ public class Board {
         }
         return false;
     }
-    
+
     /**
      * Sets the given piece to "searched" (i.e. no item has been hidden at this
      * location and the player has searched this space)
      * Throw an exception if the piece is not on the board
+     * 
      * @param x the x coordinate
      * @param y the y coordinate
      * @throws IllegalArgumentException if the piece is not in the board
@@ -214,13 +224,13 @@ public class Board {
         }
     }
 
-
     /**
      * Sets the given piece to a new state, after it has been searched according to
      * the following rules:
      * 1) If the space is currently VACANT, set it to SEARCHED
      * 2) If the space is currently LOST, set it to FOUND
      * 3) Return true if the search was successful (or unnecessary), false otherwide
+     * 
      * @param x
      * @param y
      * @return true if the search was successful (or unnecessary), false otherwise
@@ -230,25 +240,27 @@ public class Board {
         if (this.getPiece(x, y) == Piece.VACANT) {
             this.setSearched(x, y);
             return true;
-        } 
-        else if (this.getPiece(x, y) == Piece.LOSTITEM) {
+        } else if (this.getPiece(x, y) == Piece.LOSTITEM) {
             this.setFoundItem(x, y);
             return true;
-        } 
-        
+        }
+
         return false;
     }
-    
+
     /**
-     * Find the closest lost item piece to the piece that has just been touched (at [touchedX, touchedY]).
+     * Find the closest lost item piece to the piece that has just been touched (at
+     * [touchedX, touchedY]).
      * Return the "number of spaces away" that the closest lost item is.
-     * An item is considered "the closest" if the "number of spaces away in the x direction" 
+     * An item is considered "the closest" if the "number of spaces away in the x
+     * direction"
      * plus the "number of spaces away in the y direction" is minimal.
+     * 
      * @param touchedX the x coordinate of the touched point
      * @param touchedY the y coordinate of the touched point
-     * @return an array of size 2 containing the number of spaces away 
-     * in the X direction and the number of spaces away in the Y direction 
-     * where the array is in the form [x, y]
+     * @return an array of size 2 containing the number of spaces away
+     *         in the X direction and the number of spaces away in the Y direction
+     *         where the array is in the form [x, y]
      */
     public int[] getClosestItem(int touchedX, int touchedY) {
         // TODO 25
@@ -267,11 +279,13 @@ public class Board {
         }
         return closestLost;
     }
-    
+
     /**
      * Checks if a whole item has been found on the board
-     * An item is considered "found" if there are a cluster of spaces on the board that 
-     * have a value of FOUNDITEM, and that cluster is in the shape of the item. 
+     * An item is considered "found" if there are a cluster of spaces on the board
+     * that
+     * have a value of FOUNDITEM, and that cluster is in the shape of the item.
+     * 
      * @param item the item to check.
      * @return true if the item has been found, false otherwise.
      */
@@ -279,15 +293,16 @@ public class Board {
         // TODO 26
         return false;
     }
-    
+
     /**
      * Goes through a list of items and checks which of the items have been found.
      * (hint: use a helper method that you have already written).
+     * 
      * @return an array list of items that have been found.
      */
     public ArrayList<Item> getFoundItemsList(Item[] items) {
         // TODO 27
         return null;
     }
-    
+
 }
