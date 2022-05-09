@@ -1,6 +1,6 @@
 #BlueJ class context
 comment0.target=ItemTest
-comment0.text=\n\ The\ test\ class\ ItemTest.\n\n\ @author\ Ms\ Caitlin\ Woods\n\ @version\ April\ 2022\n
+comment0.text=\r\n\ The\ test\ class\ ItemTest.\r\n\r\n\ @author\ Ms\ Caitlin\ Woods\r\n\ @version\ April\ 2022\r\n
 comment1.params=
 comment1.target=ItemTest()
 comment10.params=
@@ -9,10 +9,10 @@ comment11.params=
 comment11.target=void\ testRotate90Degrees()
 comment12.params=
 comment12.target=void\ tearDown()
-comment12.text=\n\ Tears\ down\ the\ test\ fixture.\n\n\ Called\ after\ every\ test\ case\ method.\n
+comment12.text=\r\n\ Tears\ down\ the\ test\ fixture.\r\n\r\n\ Called\ after\ every\ test\ case\ method.\r\n
 comment2.params=
 comment2.target=void\ setUp()
-comment2.text=\n\ Sets\ up\ the\ test\ fixture.\n\n\ Called\ before\ every\ test\ case\ method.\n
+comment2.text=\r\n\ Sets\ up\ the\ test\ fixture.\r\n\r\n\ Called\ before\ every\ test\ case\ method.\r\n
 comment3.params=
 comment3.target=void\ testGetType()
 comment4.params=

@@ -62,8 +62,7 @@ public class Item {
      */
     public void setShape(int[][] newShape) {
         // TODO 4
-        shape = 
-        
+        this.shape = newShape;
     }
 
     /**
@@ -71,6 +70,7 @@ public class Item {
      */
     public void setFound() {
         // TODO 5
+        this.isFound = true;
     }
 
     /**
@@ -80,7 +80,7 @@ public class Item {
      */
     public boolean getIsFound() {
         // TODO 6
-        return false;
+        return this.isFound;
     }
 
     /**
@@ -90,7 +90,7 @@ public class Item {
      */
     public int getLocationX() {
         // TODO 7
-        return 0;
+        return this.locationX;
     }
 
     /**
@@ -100,7 +100,7 @@ public class Item {
      */
     public int getLocationY() {
         // TODO 8
-        return 0;
+        return this.locationY;
     }
 
     /**
@@ -111,6 +111,8 @@ public class Item {
      */
     public void setLocation(int xloc, int yloc) {
         // TODO 9
+        this.locationX = xloc;
+        this.locationY = yloc;
     }
 
     /**
@@ -120,5 +122,13 @@ public class Item {
      */
     public void rotate90Degrees() {
         // TODO 10
+        int sideLen = this.shape.length;
+        int[][] rotatedShape = new int[sideLen][sideLen];
+        for ( int y = 0; y < sideLen; y++){
+            for ( int x = sideLen - 1; x >= 0; x--){
+                rotatedShape[x][y] = this.shape[y][x];
+            }
+        }
+        this.shape = rotatedShape;
     }
 }
