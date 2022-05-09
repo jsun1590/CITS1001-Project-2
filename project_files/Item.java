@@ -62,7 +62,7 @@ public class Item {
      */
     public void setShape(int[][] newShape) {
         // TODO 4
-        shape = ();
+        shape = 
         
     }
 
