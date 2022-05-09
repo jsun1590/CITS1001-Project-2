@@ -5,7 +5,7 @@
  * @author Ms Caitlin Woods
  * @version April 2022
  * 
- * Student Names and Numbers: { ENTER YOUR STUDENT NAME AND NUMBER HERE }
+ * Student Names and Numbers: Kim Thanh Huynh 23168144
  */
 
 import java.util.ArrayList;
