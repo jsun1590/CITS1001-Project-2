@@ -1,0 +1,24 @@
+#BlueJ class context
+comment0.target=AIPlayer
+comment1.params=board\ numberOfItems
+comment1.target=AIPlayer(Board,\ int)
+comment1.text=\n\ Constructor\ for\ objects\ of\ class\ AIplayer.\n\ Initialises\ the\ itemBank\ array\ with\ five\ default\ items\ that\ can\ be\ placed\ on\n\ THIS\ HAS\ BEEN\ PROVIDED\ FOR\ YOU.\n\ PLEASE\ DO\ NOT\ MODIFY\ OR\ CHANGE\ ANY\ CODE\ IN\ THIS\ CONSTRUCTOR.\n
+comment2.params=numberOfItems
+comment2.target=Item[]\ selectItems(int)
+comment2.text=\n\ Returns\ a\ UNIQUE\ numberOfItems\ from\ the\ itemBank\ array.\ For\ example,\ if\n\ numberOfItems\ is\ 2,\ then\ two\ items\ should\ be\ true.\n\ These\ items\ should\ be\ selected\ at\ random\ and\ should\ be\ unique\ (no\ items\ can\n\ be\ the\ same).\n\ @param\ numberOfItems\ the\ number\ of\ items\ to\ be\ selected\n\ @return\ an\ array\ of\ items\ (randomly\ selected\ from\ the\ itemBank\ and\ unique)\n
+comment3.params=
+comment3.target=int[]\ selectLocation()
+comment3.text=\n\ Randomly\ select\ a\ location\ for\ the\ item\ to\ be\ placed.\ No\ validation\n\ needs\ to\ be\ performed\ on\ the\ selected\ location\ at\ this\ point\ but\ the\ location\ should\ be\n\ within\ the\ size\ of\ the\ board.\n\ \n\ @return\ an\ int[]\ representing\ a\ location\ where\ (loc[0]\ \=\ x\ location\ and\n\ \ \ \ \ \ \ \ \ loc[1]\ \=\ y\ location)\n
+comment4.params=
+comment4.target=int\ selectOrientation()
+comment4.text=\n\ Randomly\ select\ an\ item\ orientation\ value\ in\ degrees\ (i.e.\ 0,\ 90,\ 180\ or\ 270).\ Return\ an\n\ integer\ representing\ an\ item's\ orientation.\n\ @return\ an\ integer\ (either\ 0,\ 90,\ 180\ or\ 270).\n
+comment5.params=item\ location\ orr
+comment5.target=java.lang.Boolean\ tryItemLocation(Item,\ int[],\ int)
+comment5.text=\n\ Test\ if\ a\ chosen\ location\ (int[])\ and\ orientation\ (int)\ is\ valid\ for\ a\ given\ item\ (i.e.\ the\ item\n\ fits\ at\ that\ location\ on\ the\ board)\n\ \n\ @param\ location\:\ the\ location\ to\ be\ tested\ (hint\:\ location\ is\ represented\ in\ the\ same\ way\ \n\ as\ in\ the\ selectLocation\ method)\n\ (hint\:\ you\ have\ to\ rotate\ the\ array\ according\ to\ "orr"\ before\ testing\ the\ location)\n\ @param\ item\:\ \ the\ item\ to\ find\ a\ place\ for.\n\ @return\ true\ if\ the\ item\ fits\ at\ the\ location,\ false\ otherwise\n
+comment6.params=item\ location
+comment6.target=void\ setLostPieces(Item,\ int[])
+comment6.text=\n\ Place\ an\ item\ at\ the\ location\ (represented\ by\ an\ int[])\ on\ the\ board.\n\ (hint\:\ the\ first\ element\ of\ the\ location\ array\ is\ the\ x\ coordinate,\ and\ the\ second\ element\ is\ the\ y\ coodinate).\n\ The\ item\ is\ placed\ by\ setting\ each\ piece\ where\ the\ item's\ value\ is\ 1\ to\ a\ LOSTITEM\ state.\n\ (e.g.\ for\ a\ phone\ where\ the\ shape\ is\ [[1,\ 0],\ [1,\ 0]],\ the\ output\ shoud\ be\ [[LOSTITEM,\ VACANT][LOSTITEM,\ VACAMNT]]\n\ @param\ item\:\ \ \ \ the\ item\ to\ be\ placed\n\ @param\ location\:\ the\ location\ on\ the\ board\ where\ first\ piece\ of\ the\ item\ \n\ (i.e.\ the\ 0,0\ coordinate\ of\ the\ item's\ shape)\ should\ be\ placed.\n
+comment7.params=
+comment7.target=Item[]\ startGame()
+comment7.text=\n\ Begin\ a\ game\ of\ 'Find\ My\ Things'.\ There\ are\ some\ steps\ to\ do\ here.\ They\ are\:\n\ 1)\ Select\ a\ numberOfItems\ from\ the\ itemBank\n\ 2)\ Select\ a\ starting\ location\ for\ each\ item\n\ 3)\ Keep\ trying\ to\ select\ a\ valid\ location\ for\ your\ items\ until\ you\ find\ a\n\ valid\ space.\n\ 4)\ Set\ the\ location\ of\ each\ of\ the\ selected\ items\ (hint\:\ use\ a\ method\ from\ the\ Item\ class)\n\ 5)\ Set\ the\ lost\ pieces\ on\ the\ board\ for\ each\ of\ the\ selected\ items\n\ (hint\:\ you\ have\ already\ written\ helper\ methods\ to\ do\ most\ of\ these\ things)\n\ @return\ an\ array\ of\ selectedItems\n
+numComments=8
