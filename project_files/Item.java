@@ -28,15 +28,11 @@ public class Item {
      */
     public Item(String type, int[][] shape) {
         // TODO 1
-<<<<<<< HEAD
         this.type = type;
         this.shape = shape;
         this.locationX = -1;
         this.locationY = -1;
         this.isFound = false;
-=======
-        
->>>>>>> b244a7e8e904e1e8bdd5beecab19528f1dc4eef3
     }
 
     /**
