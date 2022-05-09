@@ -21,6 +21,13 @@ public class Board {
      */
     public Board() {
         // TODO 11
+        this.board = new Piece[12][12];
+        
+        for(int y=0; y<12; y++) {
+            for(int x=0; x<12; x++) {
+                this.board[y][x] = Piece.VACANT;
+            }
+        }
     }
 
     /**
@@ -30,6 +37,13 @@ public class Board {
      */
     public Board(int rows, int cols, Piece defaultValue) {
         // TODO 12
+        this.board = new Piece[cols][rows];
+        
+        for(int y=0; y<cols; y++) {
+            for(int x=0; x<rows; x++) {
+                this.board[y][x] = defaultValue;
+            }
+        }
     }
 
     /**
@@ -40,7 +54,7 @@ public class Board {
      */
     public int getBoardSize() {
         // TODO 13
-        return 0;
+        return this.board.length;
     }
 
     /**
@@ -51,6 +65,11 @@ public class Board {
      */
     public boolean isPiece(int x, int y) {
         // TODO 14
+        if (0 <= x && x < this.getBoardSize() &&
+            0 <= y && y < this.getBoardSize()) {
+            return true;
+        }
+
         return false;
     }
 
@@ -63,7 +82,11 @@ public class Board {
      */
     public Piece getPiece(int x, int y) {
         // TODO 15
-        return null;
+        if (this.isPiece(x, y)) {
+            return this.board[y][x];
+        }
+        
+        throw new IllegalArgumentException("Coordinates are not valid.");
     }
     
     /**
@@ -76,6 +99,9 @@ public class Board {
      */
     public boolean isLostItem(int x, int y) {
         // TODO 16
+        if (this.getPiece(x, y) == Piece.LOSTITEM) {
+            return true;
+        }
         return false;
     }
     
@@ -89,6 +115,9 @@ public class Board {
      */
     public void setLostItem(int x, int y) {
         // TODO 17
+        if (this.isPiece(x, y)) {
+            this.board[y][x] = Piece.LOSTITEM;
+        }
     }
 
     /**
@@ -101,6 +130,9 @@ public class Board {
      */
     public boolean isVacant(int x, int y) {
         // TODO 18
+        if (this.getPiece(x, y) == Piece.VACANT) {
+            return true;
+        }
         return false;
     }
     
@@ -113,6 +145,9 @@ public class Board {
      */
     public void setVacant(int x, int y) {
         // TODO 19
+        if (this.isPiece(x, y)) {
+            this.board[y][x] = Piece.VACANT;
+        }
     }
     
     /**
@@ -125,6 +160,9 @@ public class Board {
      */
     public boolean isFoundItem(int x, int y) {
         // TODO 20
+        if (this.getPiece(x, y) == Piece.FOUNDITEM) {
+            return true;
+        }
         return false;
     }
 
@@ -139,6 +177,9 @@ public class Board {
      */
     public void setFoundItem(int x, int y) {
         // TODO 21
+        if (this.isPiece(x, y)) {
+            this.board[y][x] = Piece.FOUNDITEM;
+        }
     }
     
     /**
@@ -152,6 +193,9 @@ public class Board {
      */
     public boolean isSearched(int x, int y) {
         // TODO 22
+        if (this.getPiece(x, y) == Piece.SEARCHED) {
+            return true;
+        }
         return false;
     }
     
@@ -165,6 +209,9 @@ public class Board {
      */
     public void setSearched(int x, int y) {
         // TODO 23
+        if (this.isPiece(x, y)) {
+            this.board[y][x] = Piece.SEARCHED;
+        }
     }
 
 
@@ -180,6 +227,15 @@ public class Board {
      */
     public boolean searchSpace(int x, int y) {
         // TODO 24
+        if (this.getPiece(x, y) == Piece.VACANT) {
+            this.setSearched(x, y);
+            return true;
+        } 
+        else if (this.getPiece(x, y) == Piece.LOSTITEM) {
+            this.setFoundItem(x, y);
+            return true;
+        } 
+        
         return false;
     }
     
@@ -196,7 +252,20 @@ public class Board {
      */
     public int[] getClosestItem(int touchedX, int touchedY) {
         // TODO 25
-        return null;
+        int closestDist = Integer.MAX_VALUE;
+        int[] closestLost = new int[2];
+        for (int y = 0; y < this.getBoardSize(); y++) {
+            for (int x = 0; x < this.getBoardSize(); x++) {
+                int distX = Math.abs(touchedX - x);
+                int distY = Math.abs(touchedY - y);
+                if (this.isLostItem(x, y) && (distX + distY) < closestDist) {
+                    closestLost[0] = distX;
+                    closestLost[1] = distY;
+                    closestDist = distX + distY;
+                }
+            }
+        }
+        return closestLost;
     }
     
     /**

@@ -28,6 +28,7 @@ public class Item {
      */
     public Item(String type, int[][] shape) {
         // TODO 1
+        
     }
 
     /**
