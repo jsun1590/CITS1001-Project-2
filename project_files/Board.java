@@ -290,7 +290,24 @@ public class Board {
      * @return true if the item has been found, false otherwise.
      */
     public boolean checkForFoundItem(Item item) {
-        // TODO 26
+        // TODO 26;
+        int shapeSideLen = item.getShape().length;
+        for (int y = 0; y <= this.getBoardSize() - shapeSideLen; y++) {
+            for (int x = 0; x <= this.getBoardSize() - shapeSideLen; x++) {
+                int correct = 0;
+                for (int j = y; j < shapeSideLen; j++) {
+                    for (int i = x; i < shapeSideLen; i++) {
+                        if (this.board[j][i] == Piece.FOUNDITEM && item.getShape()[j][i] == 1 ||
+                                this.board[j][i] != Piece.FOUNDITEM && item.getShape()[j][i] == 0) {
+                            correct += 1;
+                        }
+                    }
+                }
+                if (correct == shapeSideLen * shapeSideLen) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -302,7 +319,13 @@ public class Board {
      */
     public ArrayList<Item> getFoundItemsList(Item[] items) {
         // TODO 27
-        return null;
+        ArrayList<Item> foundItems = new ArrayList<Item>();
+        for (Item item : items) {
+            if (this.checkForFoundItem(item)) {
+                foundItems.add(item);
+            }
+        }
+        return foundItems;
     }
 
 }

@@ -1,11 +1,11 @@
 #BlueJ class context
 comment0.target=AIPlayerTest
-comment0.text=\n\ The\ test\ class\ AIPlayerTest\n\n\ @author\ Ms\ Caitlin\ Woods\n\ @version\ April\ 2022\n
+comment0.text=\r\n\ The\ test\ class\ AIPlayerTest\r\n\r\n\ @author\ Ms\ Caitlin\ Woods\r\n\ @version\ April\ 2022\r\n
 comment1.params=
 comment1.target=AIPlayerTest()
 comment2.params=
 comment2.target=void\ setUp()
-comment2.text=\n\ Sets\ up\ the\ test\ fixture.\n\n\ Called\ before\ every\ test\ case\ method.\n
+comment2.text=\r\n\ Sets\ up\ the\ test\ fixture.\r\n\r\n\ Called\ before\ every\ test\ case\ method.\r\n
 comment3.params=
 comment3.target=void\ testSelectItems()
 comment4.params=
@@ -20,5 +20,5 @@ comment8.params=
 comment8.target=void\ testStartGame()
 comment9.params=
 comment9.target=void\ tearDown()
-comment9.text=\n\ Tears\ down\ the\ test\ fixture.\n\n\ Called\ after\ every\ test\ case\ method.\n
+comment9.text=\r\n\ Tears\ down\ the\ test\ fixture.\r\n\r\n\ Called\ after\ every\ test\ case\ method.\r\n
 numComments=10
