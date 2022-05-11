@@ -237,12 +237,12 @@ public class Board {
      */
     public boolean searchSpace(int x, int y) {
         // TODO 24
+        System.out.println(this.getPiece(x, y));
         if (this.getPiece(x, y) == Piece.VACANT) {
             this.setSearched(x, y);
             return true;
         } else if (this.getPiece(x, y) == Piece.LOSTITEM) {
             this.setFoundItem(x, y);
-            return true;
         }
 
         return false;

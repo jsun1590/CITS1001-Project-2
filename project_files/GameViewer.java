@@ -64,6 +64,7 @@ public class GameViewer implements MouseListener {
      */
     public GameViewer() {
         // TODO 34
+        this(40, 20, 3);
     }
 
     /**
@@ -80,6 +81,13 @@ public class GameViewer implements MouseListener {
      */
     private void restartGame() {
         // TODO 35
+        bd = new Board();
+        ai = new AIPlayer(bd, 3);
+        turnsRemaining = 20;
+        selectedItems = ai.startGame();
+        closestLostItem = new int[] { 0, 0 };
+        sc.drawBoard(brdSize, bkSize, scoreboardSize, turnsRemaining, closestLostItem, numberOfFoundItems,
+                selectedItems, bd);
     }
 
     /**
@@ -93,7 +101,11 @@ public class GameViewer implements MouseListener {
      */
     public int[] getNearestPiece(int xClicked, int yClicked) {
         // TODO 36
-        return null;
+        int x = xClicked / bkSize;
+        int y = yClicked / bkSize;
+        System.out.println("x:"+x);
+        System.out.println("y:"+y);
+        return new int[] {x, y};
     }
 
     /**
@@ -103,7 +115,7 @@ public class GameViewer implements MouseListener {
      */
     public int getTurnsRemaining() {
         // TODO 37
-        return 0;
+        return turnsRemaining;
     }
 
     /**
@@ -115,6 +127,9 @@ public class GameViewer implements MouseListener {
      */
     public void reduceTurns(boolean clickSuccessful) {
         // TODO 38
+        if (!clickSuccessful) {
+            turnsRemaining--;
+        }
     }
 
     /**
@@ -125,6 +140,10 @@ public class GameViewer implements MouseListener {
      */
     public void drawGameOutcome() {
         // TODO 39
+        if (turnsRemaining == 0) {
+            sc.drawGameLost(0, 0);
+        }
+        sc.drawGameWon(0, 0);
     }
 
     /**
@@ -141,6 +160,15 @@ public class GameViewer implements MouseListener {
      */
     public void refreshBoard(int xLastClicked, int yLastClicked) {
         // TODO 40
+        for (Item item : bd.getFoundItemsList(selectedItems)) {
+            item.setFound();
+        }
+        closestLostItem = bd.getClosestItem(xLastClicked, yLastClicked);
+        sc.drawBoard(brdSize, bkSize, scoreboardSize, turnsRemaining, closestLostItem, numberOfFoundItems,
+                selectedItems, bd);
+        if (turnsRemaining == 0) {
+            drawGameOutcome();
+        }
     }
 
     /**
@@ -157,7 +185,13 @@ public class GameViewer implements MouseListener {
      */
     public int takeTurn(int x, int y) {
         // TODO 41
-        return 0;
+        if (turnsRemaining != 0 && (bd.getPiece(x, y) == Piece.VACANT ||
+        bd.getPiece(x, y) == Piece.LOSTITEM)) {
+            reduceTurns(!bd.searchSpace(x, y));
+        }
+        refreshBoard(x, y);
+        return turnsRemaining;
+
     }
 
     /**
@@ -172,6 +206,8 @@ public class GameViewer implements MouseListener {
     }
 
     public void mouseClicked(MouseEvent e) {
+        int[] nearestPiece = getNearestPiece(e.getX(), e.getY());
+        takeTurn(nearestPiece[0], nearestPiece[1]);
     }
 
     public void mouseReleased(MouseEvent e) {
