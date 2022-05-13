@@ -124,8 +124,8 @@ public class Item {
         // TODO 10
         int sideLen = this.shape.length;
         int[][] rotatedShape = new int[sideLen][sideLen];
-        for ( int y = 0; y < sideLen; y++){
-            for ( int x = sideLen - 1; x >= 0; x--){
+        for (int y = 0; y < sideLen; y++) {
+            for (int x = sideLen - 1; x >= 0; x--) {
                 rotatedShape[x][y] = this.shape[y][x];
             }
         }

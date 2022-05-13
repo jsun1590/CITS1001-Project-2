@@ -1,4 +1,3 @@
-
 /**
  * Implements a view of a game of "find my things" by allowing users to click to take turns 
  * and displaying the output.
@@ -103,9 +102,9 @@ public class GameViewer implements MouseListener {
         // TODO 36
         int x = xClicked / bkSize;
         int y = yClicked / bkSize;
-        System.out.println("x:"+x);
-        System.out.println("y:"+y);
-        return new int[] {x, y};
+        System.out.println("x:" + x);
+        System.out.println("y:" + y);
+        return new int[] { x, y };
     }
 
     /**
@@ -140,6 +139,7 @@ public class GameViewer implements MouseListener {
      */
     public void drawGameOutcome() {
         // TODO 39
+        // FIX
         if (turnsRemaining == 0) {
             sc.drawGameLost(0, 0);
         }
@@ -186,7 +186,7 @@ public class GameViewer implements MouseListener {
     public int takeTurn(int x, int y) {
         // TODO 41
         if (turnsRemaining != 0 && (bd.getPiece(x, y) == Piece.VACANT ||
-        bd.getPiece(x, y) == Piece.LOSTITEM)) {
+                bd.getPiece(x, y) == Piece.LOSTITEM)) {
             reduceTurns(!bd.searchSpace(x, y));
         }
         refreshBoard(x, y);

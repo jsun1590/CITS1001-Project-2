@@ -47,9 +47,9 @@ public class Board {
     }
 
     /**
-     * Returns the size of the board as an integer (i.e. 12x12 board should return
+     * Returns the size of the board as an integer (x.e. 12x12 board should return
      * 12)
-     * hint: You can assume the grid is square (i.e. rows == cols)
+     * hint: You can assume the grid is square (x.e. rows == cols)
      * 
      * @return the size of the board
      */
@@ -110,7 +110,7 @@ public class Board {
     }
 
     /**
-     * Sets the given piece to be part of a lost item (i.e. an item is hidden at
+     * Sets the given piece to be part of a lost item (x.e. an item is hidden at
      * this location)
      * Throw an exception if the piece is not on the board
      * 
@@ -143,7 +143,7 @@ public class Board {
     }
 
     /**
-     * Sets the given piece to be vacant (i.e. no item is on this location)
+     * Sets the given piece to be vacant (x.e. no item is on this location)
      * Throw an exception if the piece is not on the board
      * 
      * @param x the x coordinate
@@ -175,7 +175,7 @@ public class Board {
     }
 
     /**
-     * Sets the given piece to be part of a found item (i.e. an item is hidden at
+     * Sets the given piece to be part of a found item (x.e. an item is hidden at
      * this location and this piece has been found by the player)
      * Throw an exception if the piece is not on the board
      * 
@@ -209,7 +209,7 @@ public class Board {
     }
 
     /**
-     * Sets the given piece to "searched" (i.e. no item has been hidden at this
+     * Sets the given piece to "searched" (x.e. no item has been hidden at this
      * location and the player has searched this space)
      * Throw an exception if the piece is not on the board
      * 
@@ -292,21 +292,22 @@ public class Board {
     public boolean checkForFoundItem(Item item) {
         // TODO 26;
         int shapeSideLen = item.getShape().length;
-        for (int y = 0; y <= this.getBoardSize() - shapeSideLen; y++) {
-            for (int x = 0; x <= this.getBoardSize() - shapeSideLen; x++) {
-                int correct = 0;
-                for (int j = y; j < shapeSideLen; j++) {
-                    for (int i = x; i < shapeSideLen; i++) {
-                        if (this.board[j][i] == Piece.FOUNDITEM && item.getShape()[j][i] == 1 ||
-                                this.board[j][i] != Piece.FOUNDITEM && item.getShape()[j][i] == 0) {
-                            correct += 1;
-                        }
+        for (int orr = 0; orr < 4; orr++) {
+            int correct = 0;
+            for (int y = item.getLocationY(); y < item.getLocationY() + shapeSideLen; y++) {
+                for (int x = item.getLocationX(); x < item.getLocationX() + shapeSideLen; x++) {
+                    if ((this.getPiece(x, y) == Piece.FOUNDITEM
+                            && item.getShape()[y - item.getLocationY()][x - item.getLocationX()] == 1) ||
+                            (this.getPiece(x, y) != Piece.FOUNDITEM
+                                    && item.getShape()[y - item.getLocationY()][x - item.getLocationX()] == 0)) {
+                        correct += 1;
+                    }
+                    if (correct == shapeSideLen * shapeSideLen) {
+                        return true;
                     }
                 }
-                if (correct == shapeSideLen * shapeSideLen) {
-                    return true;
-                }
             }
+            item.rotate90Degrees();
         }
         return false;
     }
