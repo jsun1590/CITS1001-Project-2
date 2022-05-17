@@ -32,6 +32,9 @@ public class GameViewer implements MouseListener {
     private int numberOfHiddenItems; // the number of items that the AI player needs to hide.
     private int numberOfTurnsAtStartOfGame; // the number of turns that they player has when a new game starts.
 
+    private Frame frame;
+    private int timeLeft = 40;
+
     /**
      * Constructor for objects of class GameViewer.
      * Initialises the field variables and begins a game of "find my things".
@@ -66,6 +69,37 @@ public class GameViewer implements MouseListener {
     public GameViewer() {
         // TODO 34
         this(40, 20, 3);
+        // GameTimer game = new GameTimer(sc, brdSize, scoreboardSize, 60);
+        // game.start();
+        boolean running = true;
+        frame = Frame.getFrames()[0];
+        frame.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent componentEvent) {
+                // do stuff
+                sc.drawBoard(brdSize, bkSize, scoreboardSize, turnsRemaining,
+                        closestLostItem, numberOfFoundItems, selectedItems, bd);
+                drawTimer();
+            }
+        });
+
+        while (running) {
+            timeLeft--;
+            drawTimer();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void drawTimer() {
+        Rectangle r = frame.getBounds();
+        int x1 = r.width - 200;
+        int y1 = brdSize + scoreboardSize - 50;
+
+        sc.drawRectangle(x1, y1, x1 + 100, y1 + 50, Color.gray);
+        sc.drawString(String.format("Timer: %d", timeLeft), x1 + 20, y1 + 30, Color.black);
     }
 
     /**
@@ -222,6 +256,7 @@ public class GameViewer implements MouseListener {
             int[] nearestPiece = getNearestPiece(e.getX(), e.getY());
             takeTurn(nearestPiece[0], nearestPiece[1]);
         }
+        drawTimer();
     }
 
     public void mouseReleased(MouseEvent e) {

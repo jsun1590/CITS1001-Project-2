@@ -151,7 +151,7 @@ public class SimpleCanvas {
 
     public void drawItem(String itemName, int pixelSize, int x1, int y1, Color c) {
         int[][] shape;
-        switch (itemName) {            
+        switch (itemName) {
             case "keys":
                 shape = new int[][] { { 0, 1, 0 }, { 1, 1, 1 }, { 0, 0, 0 } };
                 break;
@@ -165,7 +165,7 @@ public class SimpleCanvas {
                 shape = new int[][] { { 1, 1, 0 }, { 1, 1, 0 }, { 1, 1, 0 } };
                 break;
             case "phone":
-                shape = new int[][]  { { 1, 0 }, { 1, 0 } };
+                shape = new int[][] { { 1, 0 }, { 1, 0 } };
                 break;
             default:
                 shape = new int[][] {};
