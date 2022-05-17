@@ -1,3 +1,4 @@
+
 /**
  * Implements a view of a game of "find my things" by allowing users to click to take turns 
  * and displaying the output.
@@ -43,7 +44,8 @@ public class GameViewer implements MouseListener {
         this.bkSize = bkSize;
         scoreboardSize = 4 * bkSize;
         brdSize = bkSize * 12;
-        sc = new SimpleCanvas("Find my Things", brdSize, brdSize + scoreboardSize, Color.WHITE);
+        sc = new SimpleCanvas("Find my Things", brdSize,
+                brdSize + scoreboardSize, Color.WHITE);
         sc.addMouseListener(this);
 
         bd = new Board();
@@ -51,8 +53,8 @@ public class GameViewer implements MouseListener {
         turnsRemaining = numberOfTurnsAtStartOfGame;
         selectedItems = ai.startGame();
         closestLostItem = new int[2];
-        sc.drawBoard(brdSize, bkSize, scoreboardSize, turnsRemaining, closestLostItem, numberOfFoundItems,
-                selectedItems, bd);
+        sc.drawBoard(brdSize, bkSize, scoreboardSize, turnsRemaining,
+                closestLostItem, numberOfFoundItems, selectedItems, bd);
     }
 
     /**
@@ -83,10 +85,11 @@ public class GameViewer implements MouseListener {
         bd = new Board();
         ai = new AIPlayer(bd, 3);
         turnsRemaining = 20;
+        numberOfFoundItems = 0;
         selectedItems = ai.startGame();
         closestLostItem = new int[] { 0, 0 };
-        sc.drawBoard(brdSize, bkSize, scoreboardSize, turnsRemaining, closestLostItem, numberOfFoundItems,
-                selectedItems, bd);
+        sc.drawBoard(brdSize, bkSize, scoreboardSize, turnsRemaining,
+                closestLostItem, numberOfFoundItems, selectedItems, bd);
     }
 
     /**
@@ -102,8 +105,6 @@ public class GameViewer implements MouseListener {
         // TODO 36
         int x = xClicked / bkSize;
         int y = yClicked / bkSize;
-        System.out.println("x:" + x);
-        System.out.println("y:" + y);
         return new int[] { x, y };
     }
 
@@ -139,11 +140,12 @@ public class GameViewer implements MouseListener {
      */
     public void drawGameOutcome() {
         // TODO 39
-        // FIX
         if (turnsRemaining == 0) {
             sc.drawGameLost(0, 0);
+        } else if (numberOfFoundItems == numberOfHiddenItems) {
+            sc.drawGameWon(0, 0);
         }
-        sc.drawGameWon(0, 0);
+        ;
     }
 
     /**
@@ -160,15 +162,18 @@ public class GameViewer implements MouseListener {
      */
     public void refreshBoard(int xLastClicked, int yLastClicked) {
         // TODO 40
-        for (Item item : bd.getFoundItemsList(selectedItems)) {
+        numberOfFoundItems = 0;
+        ArrayList<Item> foundItems = bd.getFoundItemsList(selectedItems);
+        for (Item item : foundItems) {
             item.setFound();
+            numberOfFoundItems++;
         }
+
         closestLostItem = bd.getClosestItem(xLastClicked, yLastClicked);
-        sc.drawBoard(brdSize, bkSize, scoreboardSize, turnsRemaining, closestLostItem, numberOfFoundItems,
-                selectedItems, bd);
-        if (turnsRemaining == 0) {
-            drawGameOutcome();
-        }
+        sc.drawBoard(brdSize, bkSize, scoreboardSize, turnsRemaining,
+                closestLostItem, numberOfFoundItems, selectedItems, bd);
+
+        drawGameOutcome();
     }
 
     /**
@@ -206,8 +211,17 @@ public class GameViewer implements MouseListener {
     }
 
     public void mouseClicked(MouseEvent e) {
-        int[] nearestPiece = getNearestPiece(e.getX(), e.getY());
-        takeTurn(nearestPiece[0], nearestPiece[1]);
+        if (e.getX() <= 150 &&
+                e.getY() >= brdSize + scoreboardSize - 50 &&
+                e.getY() <= brdSize + scoreboardSize) {
+            restartGame();
+        } else if (numberOfFoundItems == numberOfHiddenItems) {
+            return;
+        } else if (e.getX() <= brdSize &&
+                e.getY() <= brdSize) {
+            int[] nearestPiece = getNearestPiece(e.getX(), e.getY());
+            takeTurn(nearestPiece[0], nearestPiece[1]);
+        }
     }
 
     public void mouseReleased(MouseEvent e) {
