@@ -57,8 +57,8 @@ public class AIPlayer {
         for (int i = 0; i < numberOfItems; i++) {
             boolean uniqueRandomItem = false;
             while (!uniqueRandomItem) {
-                int randomIndex = random.nextInt(this.itemBank.length);
-                Item randomItem = this.itemBank[randomIndex];
+                int randomIndex = random.nextInt(itemBank.length);
+                Item randomItem = itemBank[randomIndex];
                 if (!Arrays.stream(selectedItems).anyMatch(item -> item == randomItem)) {
                     selectedItems[i] = randomItem;
                     uniqueRandomItem = true;
@@ -80,8 +80,8 @@ public class AIPlayer {
     public int[] selectLocation() {
         // TODO 29
         Random random = new Random();
-        int[] loc = new int[] { random.nextInt(this.board.getBoardSize()),
-                random.nextInt(this.board.getBoardSize()) };
+        int[] loc = new int[] { random.nextInt(board.getBoardSize()),
+                random.nextInt(board.getBoardSize()) };
         return loc;
     }
 
@@ -118,9 +118,50 @@ public class AIPlayer {
             item.rotate90Degrees();
         }
 
-        return location[0] + item.getShape().length <= this.board.getBoardSize() &&
-                location[1] + item.getShape().length <= this.board.getBoardSize() &&
-                this.board.board[location[1]][location[0]] == Piece.VACANT;
+        int[][] trimmedShape = trim(item.getShape());
+
+        if (location[1] + trimmedShape.length > board.getBoardSize() ||
+                location[0] + trimmedShape[0].length > board.getBoardSize()) {
+            return false;
+        }
+        for (int y = location[1]; y < location[1] + trimmedShape.length; y++) {
+            for (int x = location[0]; x < location[0] + trimmedShape[0].length; x++) {
+                if (trimmedShape[y - location[1]][x - location[0]] == 1 &&
+                        board.getPiece(x, y) != Piece.VACANT) {
+                    return false;
+                }
+            }
+        }
+        return true;
+        // return location[0] + item.getShape().length <= board.getBoardSize() &&
+        // location[1] + item.getShape().length <= board.getBoardSize() &&
+        // board.board[location[1]][location[0]] == Piece.VACANT;
+    }
+
+    public static int[][] trim(int[][] arr) {
+        int cmin = arr[0].length;
+        int rmin = arr.length;
+        int cmax = -1;
+        int rmax = -1;
+
+        for (int r = 0; r < arr.length; r++)
+            for (int c = 0; c < arr[0].length; c++)
+                if (arr[r][c] != 0) {
+                    if (cmin > c)
+                        cmin = c;
+                    if (cmax < c)
+                        cmax = c;
+                    if (rmin > r)
+                        rmin = r;
+                    if (rmax < r)
+                        rmax = r;
+                }
+
+        int[][] result = new int[rmax - rmin + 1][];
+        for (int r = rmin, i = 0; r <= rmax; r++, i++) {
+            result[i] = Arrays.copyOfRange(arr[r], cmin, cmax + 1);
+        }
+        return result;
     }
 
     /**
@@ -139,10 +180,12 @@ public class AIPlayer {
      */
     public void setLostPieces(Item item, int[] location) {
         // TODO 32
-        for (int y = 0; y < item.getShape().length; y++) {
-            for (int x = 0; x < item.getShape().length; x++) {
+        int[][] trimmedShape = trim(item.getShape());
+
+        for (int y = 0; y < trimmedShape.length; y++) {
+            for (int x = 0; x < trimmedShape[0].length; x++) {
                 if (item.getShape()[y][x] == 1) {
-                    this.board.board[y + location[1]][x + location[0]] = Piece.LOSTITEM;
+                    board.board[y + location[1]][x + location[0]] = Piece.LOSTITEM;
                 }
             }
         }
@@ -164,14 +207,14 @@ public class AIPlayer {
     public Item[] startGame() {
         // TODO 33
 
-        Item[] items = this.selectItems(numberOfItems);
+        Item[] items = selectItems(numberOfItems);
         for (Item item : items) {
             boolean isSet = false;
             while (!isSet) {
-                int[] loc = this.selectLocation();
-                if (this.tryItemLocation(item, loc, this.selectOrientation())) {
+                int[] loc = selectLocation();
+                if (tryItemLocation(item, loc, selectOrientation())) {
                     item.setLocation(loc[0], loc[1]);
-                    this.setLostPieces(item, loc);
+                    setLostPieces(item, loc);
                     isSet = true;
                 }
             }

@@ -125,7 +125,7 @@ public class Item {
         int sideLen = shape.length;
         int[][] rotatedShape = new int[sideLen][sideLen];
         for (int y = 0; y < sideLen; y++) {
-            for (int x = sideLen - 1; x >= 0; x--) {
+            for (int x = 0; x < sideLen; x++) {
                 rotatedShape[x][y] = shape[y][x];
             }
         }

@@ -13,7 +13,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public class GameViewer implements MouseListener {
+import javax.swing.JFrame;
+
+public class GameViewer implements MouseListener, MouseMotionListener {
 
     // instance variables
     private int bkSize; // block size (i.e. size of a piece) - all other measurements to be derived from
@@ -32,8 +34,10 @@ public class GameViewer implements MouseListener {
     private int numberOfHiddenItems; // the number of items that the AI player needs to hide.
     private int numberOfTurnsAtStartOfGame; // the number of turns that they player has when a new game starts.
 
-    private Frame frame;
-    private int timeLeft = 40;
+    private JFrame frame;
+    private int timeLeft;
+    private int initialBkSize;
+    private int initialFrameWidth;
 
     /**
      * Constructor for objects of class GameViewer.
@@ -58,6 +62,41 @@ public class GameViewer implements MouseListener {
         closestLostItem = new int[2];
         sc.drawBoard(brdSize, bkSize, scoreboardSize, turnsRemaining,
                 closestLostItem, numberOfFoundItems, selectedItems, bd);
+
+        sc.addMouseMotionListener(this);
+        timeLeft = 40;
+        frame = (JFrame) JFrame.getFrames()[0];
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        Rectangle r = frame.getBounds();
+        initialFrameWidth = r.width;
+        initialBkSize = bkSize;
+        frame.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent componentEvent) {
+                Rectangle r = frame.getBounds();
+                int bkSize = initialBkSize * r.width / initialFrameWidth;
+
+                sc.drawBoard(brdSize, bkSize, scoreboardSize, turnsRemaining,
+                        closestLostItem, numberOfFoundItems, selectedItems, bd);
+                drawTimer();
+                drawGameOutcome();
+            }
+        });
+
+        Thread thread = new Thread() {
+            public void run() {
+                while (true) {
+                    timeLeft--;
+                    drawTimer();
+                    drawGameOutcome();
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        thread.start();
     }
 
     /**
@@ -69,28 +108,6 @@ public class GameViewer implements MouseListener {
     public GameViewer() {
         // TODO 34
         this(40, 20, 3);
-        // GameTimer game = new GameTimer(sc, brdSize, scoreboardSize, 60);
-        // game.start();
-        boolean running = true;
-        frame = Frame.getFrames()[0];
-        frame.addComponentListener(new ComponentAdapter() {
-            public void componentResized(ComponentEvent componentEvent) {
-                // do stuff
-                sc.drawBoard(brdSize, bkSize, scoreboardSize, turnsRemaining,
-                        closestLostItem, numberOfFoundItems, selectedItems, bd);
-                drawTimer();
-            }
-        });
-
-        while (running) {
-            timeLeft--;
-            drawTimer();
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public void drawTimer() {
@@ -245,18 +262,19 @@ public class GameViewer implements MouseListener {
     }
 
     public void mouseClicked(MouseEvent e) {
-        if (e.getX() <= 150 &&
-                e.getY() >= brdSize + scoreboardSize - 50 &&
-                e.getY() <= brdSize + scoreboardSize) {
+        if (e.getX() < 150 &&
+                e.getY() > brdSize + scoreboardSize - 50 &&
+                e.getY() < brdSize + scoreboardSize) {
             restartGame();
         } else if (numberOfFoundItems == numberOfHiddenItems) {
             return;
-        } else if (e.getX() <= brdSize &&
-                e.getY() <= brdSize) {
+        } else if (e.getX() < brdSize &&
+                e.getY() < brdSize) {
             int[] nearestPiece = getNearestPiece(e.getX(), e.getY());
             takeTurn(nearestPiece[0], nearestPiece[1]);
         }
         drawTimer();
+        drawGameOutcome();
     }
 
     public void mouseReleased(MouseEvent e) {
@@ -266,6 +284,39 @@ public class GameViewer implements MouseListener {
     }
 
     public void mouseExited(MouseEvent e) {
+        sc.drawBoard(brdSize, bkSize, scoreboardSize, turnsRemaining,
+                closestLostItem, numberOfFoundItems, selectedItems, bd);
+        drawTimer();
+        drawGameOutcome();
+    }
+
+    public void mouseDragged(MouseEvent e) {
+    }
+
+    public void mouseMoved(MouseEvent e) {
+        if (e.getX() < brdSize &&
+                e.getY() < brdSize) {
+            int[] nearestPiece = getNearestPiece(e.getX(), e.getY());
+            int x1 = nearestPiece[0];
+            int y1 = nearestPiece[1];
+            sc.drawBoard(brdSize, bkSize, scoreboardSize, turnsRemaining,
+                    closestLostItem, numberOfFoundItems, selectedItems, bd);
+            drawTimer();
+            drawGameOutcome();
+            if (bd.getPiece(x1, y1) != Piece.VACANT &&
+                    bd.getPiece(x1, y1) != Piece.LOSTITEM ||
+                    numberOfFoundItems == numberOfHiddenItems ||
+                    turnsRemaining == 0) {
+                return;
+            }
+            sc.drawRectangle(x1 * bkSize, y1 * bkSize,
+                    x1 * bkSize + bkSize, y1 * bkSize + bkSize, Color.BLACK);
+        } else {
+            sc.drawBoard(brdSize, bkSize, scoreboardSize, turnsRemaining,
+                    closestLostItem, numberOfFoundItems, selectedItems, bd);
+            drawTimer();
+            drawGameOutcome();
+        }
     }
 
     /**
@@ -285,5 +336,4 @@ public class GameViewer implements MouseListener {
     public Item[] getSelectedItems() {
         return selectedItems;
     }
-
 }
