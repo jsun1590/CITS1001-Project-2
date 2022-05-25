@@ -103,10 +103,7 @@ public class Board {
      */
     public boolean isLostItem(int x, int y) {
         // TODO 16
-        if (getPiece(x, y) == Piece.LOSTITEM) {
-            return true;
-        }
-        return false;
+        return getPiece(x, y) == Piece.LOSTITEM;
     }
 
     /**
@@ -120,9 +117,10 @@ public class Board {
      */
     public void setLostItem(int x, int y) {
         // TODO 17
-        if (isPiece(x, y)) {
-            board[y][x] = Piece.LOSTITEM;
+        if (!isPiece(x, y)) {
+            throw new IllegalArgumentException("Coordinates are not valid.");
         }
+        board[y][x] = Piece.LOSTITEM;
     }
 
     /**
@@ -136,10 +134,7 @@ public class Board {
      */
     public boolean isVacant(int x, int y) {
         // TODO 18
-        if (getPiece(x, y) == Piece.VACANT) {
-            return true;
-        }
-        return false;
+        return getPiece(x, y) == Piece.VACANT;
     }
 
     /**
@@ -152,9 +147,10 @@ public class Board {
      */
     public void setVacant(int x, int y) {
         // TODO 19
-        if (isPiece(x, y)) {
-            board[y][x] = Piece.VACANT;
+        if (!isPiece(x, y)) {
+            throw new IllegalArgumentException("Coordinates are not valid.");
         }
+        board[y][x] = Piece.VACANT;
     }
 
     /**
@@ -168,10 +164,7 @@ public class Board {
      */
     public boolean isFoundItem(int x, int y) {
         // TODO 20
-        if (getPiece(x, y) == Piece.FOUNDITEM) {
-            return true;
-        }
-        return false;
+        return getPiece(x, y) == Piece.FOUNDITEM;
     }
 
     /**
@@ -185,9 +178,10 @@ public class Board {
      */
     public void setFoundItem(int x, int y) {
         // TODO 21
-        if (isPiece(x, y)) {
-            board[y][x] = Piece.FOUNDITEM;
+        if (!isPiece(x, y)) {
+            throw new IllegalArgumentException("Coordinates are not valid.");
         }
+        board[y][x] = Piece.FOUNDITEM;
     }
 
     /**
@@ -202,10 +196,7 @@ public class Board {
      */
     public boolean isSearched(int x, int y) {
         // TODO 22
-        if (getPiece(x, y) == Piece.SEARCHED) {
-            return true;
-        }
-        return false;
+        return getPiece(x, y) == Piece.SEARCHED;
     }
 
     /**
@@ -219,9 +210,10 @@ public class Board {
      */
     public void setSearched(int x, int y) {
         // TODO 23
-        if (isPiece(x, y)) {
-            board[y][x] = Piece.SEARCHED;
+        if (!isPiece(x, y)) {
+            throw new IllegalArgumentException("Coordinates are not valid.");
         }
+        board[y][x] = Piece.SEARCHED;
     }
 
     /**
@@ -279,6 +271,18 @@ public class Board {
         return closestLost;
     }
 
+    public boolean isFoundItem(Item item, int[][] trimmedShape) {
+        for (int y = item.getLocationY(); y < item.getLocationY() + trimmedShape.length; y++) {
+            for (int x = item.getLocationX(); x < item.getLocationX() + trimmedShape[0].length; x++) {
+                if (getPiece(x, y) != Piece.FOUNDITEM &&
+                        trimmedShape[y - item.getLocationY()][x - item.getLocationX()] == 1) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     /**
      * Checks if a whole item has been found on the board
      * An item is considered "found" if there are a cluster of spaces on the board
@@ -290,21 +294,10 @@ public class Board {
      */
     public boolean checkForFoundItem(Item item) {
         // TODO 26;
-        int shapeSideLen = item.getShape().length;
+        int[][] trimmedShape = item.getTrimmedShape();
         for (int orr = 0; orr < 4; orr++) {
-            int correct = 0;
-            for (int y = item.getLocationY(); y < item.getLocationY() + shapeSideLen; y++) {
-                for (int x = item.getLocationX(); x < item.getLocationX() + shapeSideLen; x++) {
-                    if ((getPiece(x, y) == Piece.FOUNDITEM
-                            && item.getShape()[y - item.getLocationY()][x - item.getLocationX()] == 1) ||
-                            (getPiece(x, y) != Piece.FOUNDITEM
-                                    && item.getShape()[y - item.getLocationY()][x - item.getLocationX()] == 0)) {
-                        correct += 1;
-                    }
-                    if (correct == shapeSideLen * shapeSideLen) {
-                        return true;
-                    }
-                }
+            if (isFoundItem(item, trimmedShape)) {
+                return true;
             }
             item.rotate90Degrees();
         }

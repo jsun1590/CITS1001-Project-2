@@ -118,7 +118,7 @@ public class AIPlayer {
             item.rotate90Degrees();
         }
 
-        int[][] trimmedShape = trim(item.getShape());
+        int[][] trimmedShape = item.getTrimmedShape();
 
         if (location[1] + trimmedShape.length > board.getBoardSize() ||
                 location[0] + trimmedShape[0].length > board.getBoardSize()) {
@@ -138,32 +138,6 @@ public class AIPlayer {
         // board.board[location[1]][location[0]] == Piece.VACANT;
     }
 
-    public static int[][] trim(int[][] arr) {
-        int cmin = arr[0].length;
-        int rmin = arr.length;
-        int cmax = -1;
-        int rmax = -1;
-
-        for (int r = 0; r < arr.length; r++)
-            for (int c = 0; c < arr[0].length; c++)
-                if (arr[r][c] != 0) {
-                    if (cmin > c)
-                        cmin = c;
-                    if (cmax < c)
-                        cmax = c;
-                    if (rmin > r)
-                        rmin = r;
-                    if (rmax < r)
-                        rmax = r;
-                }
-
-        int[][] result = new int[rmax - rmin + 1][];
-        for (int r = rmin, i = 0; r <= rmax; r++, i++) {
-            result[i] = Arrays.copyOfRange(arr[r], cmin, cmax + 1);
-        }
-        return result;
-    }
-
     /**
      * Place an item at the location (represented by an int[]) on the board.
      * (hint: the first element of the location array is the x coordinate, and the
@@ -180,7 +154,7 @@ public class AIPlayer {
      */
     public void setLostPieces(Item item, int[] location) {
         // TODO 32
-        int[][] trimmedShape = trim(item.getShape());
+        int[][] trimmedShape = item.getTrimmedShape();
 
         for (int y = 0; y < trimmedShape.length; y++) {
             for (int x = 0; x < trimmedShape[0].length; x++) {

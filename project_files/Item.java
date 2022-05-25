@@ -55,6 +55,32 @@ public class Item {
         return shape;
     }
 
+    public int[][] getTrimmedShape() {
+        int cmin = getShape()[0].length;
+        int rmin = getShape().length;
+        int cmax = -1;
+        int rmax = -1;
+
+        for (int r = 0; r < getShape().length; r++)
+            for (int c = 0; c < getShape()[0].length; c++)
+                if (getShape()[r][c] != 0) {
+                    if (cmin > c)
+                        cmin = c;
+                    if (cmax < c)
+                        cmax = c;
+                    if (rmin > r)
+                        rmin = r;
+                    if (rmax < r)
+                        rmax = r;
+                }
+
+        int[][] trimmedShape = new int[rmax - rmin + 1][];
+        for (int r = rmin, i = 0; r <= rmax; r++, i++) {
+            trimmedShape[i] = Arrays.copyOfRange(getShape()[r], cmin, cmax + 1);
+        }
+        return trimmedShape;
+    }
+
     /**
      * Sets the shape of an iem to a new shape
      * 

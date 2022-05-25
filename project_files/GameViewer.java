@@ -11,9 +11,10 @@
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 import java.util.ArrayList;
-
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class GameViewer implements MouseListener, MouseMotionListener {
 
@@ -34,10 +35,11 @@ public class GameViewer implements MouseListener, MouseMotionListener {
     private int numberOfHiddenItems; // the number of items that the AI player needs to hide.
     private int numberOfTurnsAtStartOfGame; // the number of turns that they player has when a new game starts.
 
-    private JFrame frame;
-    private int timeLeft;
-    private int initialBkSize;
-    private int initialFrameWidth;
+    // EXTENSIIONS
+    private JFrame frame; // the jframe containing the simple canvas
+    private int timeLeft; // amount of time remaining in seconds before the player loses the game.
+    private boolean popupShown; // check if the get name pop up for the leaderboard has been shown.
+    private timerThread timer; // the timer thread.
 
     /**
      * Constructor for objects of class GameViewer.
@@ -54,6 +56,7 @@ public class GameViewer implements MouseListener, MouseMotionListener {
         sc = new SimpleCanvas("Find my Things", brdSize,
                 brdSize + scoreboardSize, Color.WHITE);
         sc.addMouseListener(this);
+        sc.addMouseMotionListener(this);
 
         bd = new Board();
         ai = new AIPlayer(bd, numberOfHiddenItems);
@@ -62,41 +65,12 @@ public class GameViewer implements MouseListener, MouseMotionListener {
         closestLostItem = new int[2];
         sc.drawBoard(brdSize, bkSize, scoreboardSize, turnsRemaining,
                 closestLostItem, numberOfFoundItems, selectedItems, bd);
-
-        sc.addMouseMotionListener(this);
-        timeLeft = 40;
+        timeLeft = 10;
+        popupShown = false;
         frame = (JFrame) JFrame.getFrames()[0];
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Rectangle r = frame.getBounds();
-        initialFrameWidth = r.width;
-        initialBkSize = bkSize;
-        frame.addComponentListener(new ComponentAdapter() {
-            public void componentResized(ComponentEvent componentEvent) {
-                Rectangle r = frame.getBounds();
-                int bkSize = initialBkSize * r.width / initialFrameWidth;
 
-                sc.drawBoard(brdSize, bkSize, scoreboardSize, turnsRemaining,
-                        closestLostItem, numberOfFoundItems, selectedItems, bd);
-                drawTimer();
-                drawGameOutcome();
-            }
-        });
-
-        Thread thread = new Thread() {
-            public void run() {
-                while (true) {
-                    timeLeft--;
-                    drawTimer();
-                    drawGameOutcome();
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-        thread.start();
+        setupGame();
     }
 
     /**
@@ -110,9 +84,117 @@ public class GameViewer implements MouseListener, MouseMotionListener {
         this(40, 20, 3);
     }
 
+    public class timerThread extends Thread {
+        public void run() {
+            boolean running = true;
+            while (running) {
+                drawTimer();
+                drawGameOutcome();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    running = false;
+                }
+                timeLeft--;
+                if (timeLeft < 1) {
+                    running = false;
+                }
+            }
+            drawTimer();
+            drawGameOutcome();
+        }
+    };
+
+    public void setupGame() {
+        timer = new timerThread();
+        timer.start();
+    }
+
+    public void drawLeaderboard(Integer currentScore) throws IOException {
+        ArrayList<String[]> leaderboard = new ArrayList<String[]>();
+        File lbFile = new File("leaderboard.txt");
+        if (!lbFile.exists()) {
+            lbFile.createNewFile();
+        }
+        FileReader lbFileReader = new FileReader(lbFile);
+        try (BufferedReader lbBufferedReader = new BufferedReader(lbFileReader)) {
+            String line;
+            while ((line = lbBufferedReader.readLine()) != null) {
+                String[] player = line.split("-");
+                leaderboard.add(new String[] { player[0], player[1] });
+            }
+        }
+
+        if (!popupShown && currentScore != 0) {
+            popupShown = true;
+            if (leaderboard.size() < 5) {
+                String currentName = JOptionPane.showInputDialog(
+                        frame, "Please enter your name",
+                        "Congrats, you've made the leaderboard!",
+                        JOptionPane.PLAIN_MESSAGE);
+
+                if (currentName == null) {
+                    currentName = "Guest";
+                }
+
+                leaderboard.add(new String[] { currentName, currentScore.toString() });
+            } else {
+                for (int playerIndex = 0; playerIndex < leaderboard.size(); playerIndex++) {
+                    if (currentScore >= Integer.parseInt(leaderboard.get(playerIndex)[1])) {
+
+                        String currentName = JOptionPane.showInputDialog(
+                                frame, "Please enter your name",
+                                "Congrats, you've made the leaderboard!",
+                                JOptionPane.PLAIN_MESSAGE);
+                        if (currentName == null) {
+                            currentName = "Guest";
+                        }
+                        leaderboard.add(playerIndex, new String[] { currentName, currentScore.toString() });
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (leaderboard.size() > 5) {
+            leaderboard.remove(5);
+        }
+
+        FileWriter lbFileWriter = new FileWriter(lbFile);
+        BufferedWriter lbBufferedWriter = new BufferedWriter(lbFileWriter);
+
+        for (String[] user : leaderboard) {
+            lbBufferedWriter.write(user[0] + "-" + user[1] + "\n");
+        }
+
+        lbBufferedWriter.close();
+
+        int center = brdSize / 2;
+
+        sc.drawRectangle(center - 100, center - 100,
+                center + 100, center + 100, Color.lightGray);
+
+        sc.drawString("Leaderboard", center - 35, center - 60, Color.black);
+        sc.drawString("Rank", center - 80, center - 30, Color.black);
+        sc.drawString("Name", center - 20, center - 30, Color.black);
+        sc.drawString("Score", center + 40, center - 30, Color.black);
+        for (int i = 0; i < 5; i++) {
+            if (i + 1 > leaderboard.size()) {
+                break;
+            }
+            sc.drawString(i + 1, center - 73, center + i * 20, Color.black);
+            sc.drawString(leaderboard.get(i)[0], center - 20, center + i * 20, Color.black);
+            sc.drawString(leaderboard.get(i)[1], center + 45, center + i * 20, Color.black);
+
+        }
+    }
+
+    public int calculateScore() {
+        return timeLeft + turnsRemaining;
+    }
+
     public void drawTimer() {
-        Rectangle r = frame.getBounds();
-        int x1 = r.width - 200;
+        int x1 = brdSize - 100;
         int y1 = brdSize + scoreboardSize - 50;
 
         sc.drawRectangle(x1, y1, x1 + 100, y1 + 50, Color.gray);
@@ -141,6 +223,12 @@ public class GameViewer implements MouseListener, MouseMotionListener {
         closestLostItem = new int[] { 0, 0 };
         sc.drawBoard(brdSize, bkSize, scoreboardSize, turnsRemaining,
                 closestLostItem, numberOfFoundItems, selectedItems, bd);
+
+        timeLeft = 40;
+        timer = new timerThread();
+        timer.start();
+
+        popupShown = false;
     }
 
     /**
@@ -191,10 +279,22 @@ public class GameViewer implements MouseListener, MouseMotionListener {
      */
     public void drawGameOutcome() {
         // TODO 39
-        if (turnsRemaining == 0) {
+        if (turnsRemaining == 0 || timeLeft < 1) {
+            timer.interrupt();
             sc.drawGameLost(0, 0);
+            try {
+                drawLeaderboard(0);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else if (numberOfFoundItems == numberOfHiddenItems) {
+            timer.interrupt();
             sc.drawGameWon(0, 0);
+            try {
+                drawLeaderboard(calculateScore());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         ;
     }
@@ -266,7 +366,7 @@ public class GameViewer implements MouseListener, MouseMotionListener {
                 e.getY() > brdSize + scoreboardSize - 50 &&
                 e.getY() < brdSize + scoreboardSize) {
             restartGame();
-        } else if (numberOfFoundItems == numberOfHiddenItems) {
+        } else if (numberOfFoundItems == numberOfHiddenItems || timeLeft < 1) {
             return;
         } else if (e.getX() < brdSize &&
                 e.getY() < brdSize) {
@@ -274,7 +374,7 @@ public class GameViewer implements MouseListener, MouseMotionListener {
             takeTurn(nearestPiece[0], nearestPiece[1]);
         }
         drawTimer();
-        drawGameOutcome();
+        // drawGameOutcome();
     }
 
     public void mouseReleased(MouseEvent e) {
@@ -306,7 +406,7 @@ public class GameViewer implements MouseListener, MouseMotionListener {
             if (bd.getPiece(x1, y1) != Piece.VACANT &&
                     bd.getPiece(x1, y1) != Piece.LOSTITEM ||
                     numberOfFoundItems == numberOfHiddenItems ||
-                    turnsRemaining == 0) {
+                    turnsRemaining == 0 || timeLeft < 1) {
                 return;
             }
             sc.drawRectangle(x1 * bkSize, y1 * bkSize,
