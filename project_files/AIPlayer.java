@@ -31,12 +31,27 @@ public class AIPlayer {
         this.board = board;
         this.numberOfItems = numberOfItems;
         itemBank = new Item[] {
-                new Item("phone", new int[][] { { 1, 0 }, { 1, 0 } }),
-                new Item("keys", new int[][] { { 0, 1, 0 }, { 1, 1, 1 }, { 0, 0, 0 } }),
-                new Item("shoe", new int[][] { { 1, 0, 0 }, { 1, 0, 0 }, { 1, 1, 0 } }),
+                new Item("phone", new int[][] {
+                        { 1, 0 },
+                        { 1, 0 } }),
+                new Item("keys", new int[][] {
+                        { 0, 1, 0 },
+                        { 1, 1, 1 },
+                        { 0, 0, 0 } }),
+                new Item("shoe", new int[][] {
+                        { 1, 0, 0 },
+                        { 1, 0, 0 },
+                        { 1, 1, 0 } }),
                 new Item("walking stick",
-                        new int[][] { { 1, 0, 0, 0 }, { 1, 0, 0, 0 }, { 1, 0, 0, 0 }, { 1, 0, 0, 0 } }),
-                new Item("book", new int[][] { { 1, 1, 0 }, { 1, 1, 0 }, { 1, 1, 0 } }),
+                        new int[][] {
+                                { 1, 0, 0, 0 },
+                                { 1, 0, 0, 0 },
+                                { 1, 0, 0, 0 },
+                                { 1, 0, 0, 0 } }),
+                new Item("book", new int[][] {
+                        { 1, 1, 0 },
+                        { 1, 1, 0 },
+                        { 1, 1, 0 } }),
         };
     }
 
@@ -54,14 +69,15 @@ public class AIPlayer {
         Item[] selectedItems = new Item[numberOfItems];
         Random random = new Random();
 
-        for (int i = 0; i < numberOfItems; i++) {
-            boolean uniqueRandomItem = false;
-            while (!uniqueRandomItem) {
+        for (int index = 0; index < numberOfItems; index++) {
+            boolean isUniqueItem = false;
+            while (!isUniqueItem) {
                 int randomIndex = random.nextInt(itemBank.length);
                 Item randomItem = itemBank[randomIndex];
-                if (!Arrays.stream(selectedItems).anyMatch(item -> item == randomItem)) {
-                    selectedItems[i] = randomItem;
-                    uniqueRandomItem = true;
+                if (!Arrays.stream(selectedItems)
+                        .anyMatch(item -> item == randomItem)) {
+                    selectedItems[index] = randomItem;
+                    isUniqueItem = true;
                 }
             }
         }
@@ -86,7 +102,7 @@ public class AIPlayer {
     }
 
     /**
-     * Randomly select an item orientation value in degrees (i.e. 0, 90, 180 or
+     * Randomly select an item orientation value in degrees (index.e. 0, 90, 180 or
      * 270). Return an
      * integer representing an item's orientation.
      * 
@@ -101,7 +117,7 @@ public class AIPlayer {
 
     /**
      * Test if a chosen location (int[]) and orientation (int) is valid for a given
-     * item (i.e. the item
+     * item (index.e. the item
      * fits at that location on the board)
      * 
      * @param location: the location to be tested (hint: location is represented in
@@ -114,7 +130,7 @@ public class AIPlayer {
      */
     public Boolean tryItemLocation(Item item, int[] location, int orr) {
         // TODO 31
-        for (int i = 0; i < orr / 90; i++) {
+        for (int index = 0; index < orr / 90; index++) {
             item.rotate90Degrees();
         }
 
@@ -124,18 +140,16 @@ public class AIPlayer {
                 location[0] + trimmedShape[0].length > board.getBoardSize()) {
             return false;
         }
-        for (int y = location[1]; y < location[1] + trimmedShape.length; y++) {
-            for (int x = location[0]; x < location[0] + trimmedShape[0].length; x++) {
-                if (trimmedShape[y - location[1]][x - location[0]] == 1 &&
-                        board.getPiece(x, y) != Piece.VACANT) {
+        for (int y = 0; y < trimmedShape.length; y++) {
+            for (int x = 0; x < trimmedShape[0].length; x++) {
+                if (trimmedShape[y][x] == 1 &&
+                        !board.isVacant(location[0] + x,
+                                location[1] + y)) {
                     return false;
                 }
             }
         }
         return true;
-        // return location[0] + item.getShape().length <= board.getBoardSize() &&
-        // location[1] + item.getShape().length <= board.getBoardSize() &&
-        // board.board[location[1]][location[0]] == Piece.VACANT;
     }
 
     /**
@@ -149,7 +163,7 @@ public class AIPlayer {
      * 
      * @param item:     the item to be placed
      * @param location: the location on the board where first piece of the item
-     *                  (i.e. the 0,0 coordinate of the item's shape) should be
+     *                  (index.e. the 0,0 coordinate of the item's shape) should be
      *                  placed.
      */
     public void setLostPieces(Item item, int[] location) {
@@ -159,7 +173,7 @@ public class AIPlayer {
         for (int y = 0; y < trimmedShape.length; y++) {
             for (int x = 0; x < trimmedShape[0].length; x++) {
                 if (item.getShape()[y][x] == 1) {
-                    board.board[y + location[1]][x + location[0]] = Piece.LOSTITEM;
+                    board.setLostItem(location[0] + x, location[1] + y);
                 }
             }
         }

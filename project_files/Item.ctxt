@@ -17,6 +17,7 @@ comment3.target=int[][]\ getShape()
 comment3.text=\r\n\ Returns\ the\ shape\ of\ the\ item\r\n\ \r\n\ @return\ the\ shape\ of\ the\ item\r\n
 comment4.params=
 comment4.target=int[][]\ getTrimmedShape()
+comment4.text=\r\n\ Returns\ a\ copy\ of\ the\ shape\r\n\ with\ the\ boundary\ 0s\ trimmed\ out\r\n\ E.g.\r\n\ {{1,\ 0,\ 0},\r\n\ {0,\ 1,\ 0},\r\n\ {0,\ 0,\ 0}}\r\n\ would\ be\ trimmed\ to\r\n\ {{1,\ 0},\r\n\ {0,\ 1}}\r\n\ \r\n\ @return\ the\ trimmed\ shape\r\n
 comment5.params=newShape
 comment5.target=void\ setShape(int[][])
 comment5.text=\r\n\ Sets\ the\ shape\ of\ an\ iem\ to\ a\ new\ shape\r\n\ \r\n\ @return\ the\ shape\r\n

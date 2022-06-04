@@ -25,7 +25,7 @@ public class Board {
 
         for (int y = 0; y < 12; y++) {
             for (int x = 0; x < 12; x++) {
-                board[y][x] = Piece.VACANT;
+                setVacant(x, y);
             }
         }
     }
@@ -103,6 +103,8 @@ public class Board {
      */
     public boolean isLostItem(int x, int y) {
         // TODO 16
+        // Don't need to raise another exception
+        // as getPiece method throws one if piece not in board
         return getPiece(x, y) == Piece.LOSTITEM;
     }
 
@@ -134,6 +136,8 @@ public class Board {
      */
     public boolean isVacant(int x, int y) {
         // TODO 18
+        // Don't need to raise another exception
+        // as getPiece method throws one if piece not in board
         return getPiece(x, y) == Piece.VACANT;
     }
 
@@ -164,6 +168,8 @@ public class Board {
      */
     public boolean isFoundItem(int x, int y) {
         // TODO 20
+        // Don't need to raise another exception
+        // as getPiece method throws one if piece not in board
         return getPiece(x, y) == Piece.FOUNDITEM;
     }
 
@@ -196,6 +202,8 @@ public class Board {
      */
     public boolean isSearched(int x, int y) {
         // TODO 22
+        // Don't need to raise another exception
+        // as getPiece method throws one if piece not in board
         return getPiece(x, y) == Piece.SEARCHED;
     }
 
@@ -229,11 +237,11 @@ public class Board {
      */
     public boolean searchSpace(int x, int y) {
         // TODO 24
-        if (getPiece(x, y) == Piece.VACANT) {
-            setSearched(x, y);
-            return true;
-        } else if (getPiece(x, y) == Piece.LOSTITEM) {
+        if (isLostItem(x, y)) {
             setFoundItem(x, y);
+            return true;
+        } else if (isVacant(x, y)) {
+            setSearched(x, y);
         }
 
         return false;
@@ -271,11 +279,12 @@ public class Board {
         return closestLost;
     }
 
-    public boolean isFoundItem(Item item, int[][] trimmedShape) {
-        for (int y = item.getLocationY(); y < item.getLocationY() + trimmedShape.length; y++) {
-            for (int x = item.getLocationX(); x < item.getLocationX() + trimmedShape[0].length; x++) {
-                if (getPiece(x, y) != Piece.FOUNDITEM &&
-                        trimmedShape[y - item.getLocationY()][x - item.getLocationX()] == 1) {
+    public boolean foundShape(Item item, int[][] trimmedShape) {
+        for (int y = 0; y < trimmedShape.length; y++) {
+            for (int x = 0; x < trimmedShape[0].length; x++) {
+                if (!isFoundItem(x + item.getLocationX(),
+                        y + item.getLocationY()) &&
+                        trimmedShape[y][x] == 1) {
                     return false;
                 }
             }
@@ -296,8 +305,8 @@ public class Board {
         // TODO 26;
         int[][] trimmedShape = item.getTrimmedShape();
         for (int orr = 0; orr < 4; orr++) {
-            if (isFoundItem(item, trimmedShape)) {
-                return true;
+            if (foundShape(item, trimmedShape)) {
+                return foundShape(item, trimmedShape);
             }
             item.rotate90Degrees();
         }

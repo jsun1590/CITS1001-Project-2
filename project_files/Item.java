@@ -55,28 +55,51 @@ public class Item {
         return shape;
     }
 
+    /**
+     * Returns a copy of the shape
+     * with the boundary 0s trimmed out
+     * E.g.
+     * {{1, 0, 0},
+     * {0, 1, 0},
+     * {0, 0, 0}}
+     * would be trimmed to
+     * {{1, 0},
+     * {0, 1}}
+     * 
+     * @return the trimmed shape
+     */
     public int[][] getTrimmedShape() {
-        int cmin = getShape()[0].length;
-        int rmin = getShape().length;
-        int cmax = -1;
-        int rmax = -1;
+        int xMin = getShape().length;
+        int yMin = getShape().length;
+        int xMax = -1;
+        int yMax = -1;
 
-        for (int r = 0; r < getShape().length; r++)
-            for (int c = 0; c < getShape()[0].length; c++)
-                if (getShape()[r][c] != 0) {
-                    if (cmin > c)
-                        cmin = c;
-                    if (cmax < c)
-                        cmax = c;
-                    if (rmin > r)
-                        rmin = r;
-                    if (rmax < r)
-                        rmax = r;
+        // Goes through each position in the item
+        // and set the respective min and max bounds
+        // for row and column full of 0s
+        for (int y = 0; y < getShape().length; y++)
+            for (int x = 0; x < getShape().length; x++)
+                if (getShape()[y][x] != 0) {
+                    if (xMin > x) {
+                        xMin = x;
+                    }
+                    if (xMax < x) {
+                        xMax = x;
+                    }
+                    if (yMin > y) {
+                        yMin = y;
+                    }
+                    if (yMax < y) {
+                        yMax = y;
+                    }
                 }
 
-        int[][] trimmedShape = new int[rmax - rmin + 1][];
-        for (int r = rmin, i = 0; r <= rmax; r++, i++) {
-            trimmedShape[i] = Arrays.copyOfRange(getShape()[r], cmin, cmax + 1);
+        // Copy over the shape into a new 2d array with
+        // the previously defined bounds
+        int[][] trimmedShape = new int[yMax - yMin + 1][];
+        for (int y = yMin, i = 0; y <= yMax; y++, i++) {
+            trimmedShape[i] = Arrays.copyOfRange(
+                    getShape()[y], xMin, xMax + 1);
         }
         return trimmedShape;
     }
